@@ -14,9 +14,11 @@ jobs:
 
       - name: Clone TurboWarp GUI files
         run: |
-          git clone --depth=1 "https://github.com" temp-tw
+          gh repo clone TurboWarp/scratch-gui temp-tw -- --depth=1
           rsync -av --exclude='.git' --exclude='.github' temp-tw/ .
           rm -rf temp-tw
+        env:
+          GH_TOKEN: ${{ github.token }}
 
       - name: Commit and Push to your repository
         run: |
