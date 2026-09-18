@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Custom TurboWarp Mod</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            background: #111116; 
+            color: #ffffff; 
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .controls { 
+            margin: 20px 0; 
+            background: #1e1e24; 
+            padding: 20px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        input[type="file"] {
+            margin-bottom: 15px;
+            display: block;
+        }
+        button {
+            background: #ff4c4c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        button:hover { background: #ff3333; }
+        .player-container {
+            width: 480px;
+            height: 360px;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+        }
+        iframe { width: 100%; height: 100%; border: none; }
+    </style>
+</head>
+<body>
+
+    <h1>🚀 TurboWarp Custom UI Mod</h1>
+    
+    <div class="controls">
+        <input type="file" id="file-input" accept=".sb3" />
+        <button id="run-btn">Compile & Play Project</button>
+    </div>
+
+    <div class="player-container">
+        <iframe id="player"></iframe>
+    </div>
+
+    <!-- Loads TurboWarp's lightweight core compiler engine -->
+    <script src="https://unpkg.com"></script>
+    <script>
+        document.getElementById('run-btn').addEventListener('click', async () => {
+            const fileInput = document.getElementById('file-input');
+            if (!fileInput.files.length) return alert("Please select a .sb3 Scratch project file first!");
+
+            const file = fileInput.files[0];
+            const arrayBuffer = await file.arrayBuffer();
+
+            // Use TurboWarp's engine to load and compile the project
+            const loadedProject = await Scaffolder.loadProject(arrayBuffer);
+            const packager = new Scaffolder.Packager();
+            packager.project = loadedProject;
+            
+            // Adjust custom player rules here
+            packager.options.turbo = false; 
+            packager.options.controls.fullscreen = true;
+
+            const result = await packager.package();
+            
+            // Generate a secure preview URL and load it right into the iPad screen iframe
+            const blob = new Blob([result.data], { type: 'text/html' });
+            document.getElementById('player').src = URL.createObjectURL(blob);
+        });
+    </script>
+</body>
+</html>
