@@ -1,5 +1,7 @@
 turbowarp modified for use in [Beanmod]
 
+Note: the link thing does not work so you will have to download projects from scratch and then load them
+
 ## Setup
 
 See https://docs.turbowarp.org/development/getting-started to setup the complete TurboWarp environment.
